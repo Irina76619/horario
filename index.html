@@ -1,0 +1,660 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema Irina — Feb–Mar</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1410;
+    --cream: #f5f0e8;
+    --sand: #e8dfd0;
+    --gold: #c9a84c;
+    --gold-light: #e8cc85;
+    --rust: #c0503a;
+    --sage: #6b8f71;
+    --dusty: #8b7d6b;
+    --taller: #c0503a;
+    --marketing: #6b8f71;
+    --chino: #4a6fa5;
+    --gym: #9b7fbf;
+    --trabajo: #c9a84c;
+    --familia: #d4896a;
+    --visionaria: #8b4a8b;
+    --mecanica: #b07d3a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background-color: var(--cream);
+    color: var(--ink);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+  }
+
+  .header {
+    background-color: var(--ink);
+    color: var(--cream);
+    padding: 48px 60px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .header::after {
+    content: 'IRINA';
+    position: absolute;
+    right: -20px;
+    bottom: -40px;
+    font-family: 'Playfair Display', serif;
+    font-size: 160px;
+    font-weight: 700;
+    color: rgba(255,255,255,0.04);
+    letter-spacing: -8px;
+    pointer-events: none;
+  }
+
+  .header-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 48px;
+    font-weight: 400;
+    line-height: 1.1;
+    margin-bottom: 8px;
+  }
+
+  .header h1 em {
+    font-style: italic;
+    color: var(--gold-light);
+  }
+
+  .header-sub {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--dusty);
+    margin-top: 16px;
+  }
+
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    padding: 20px 60px;
+    background: var(--sand);
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.05em;
+  }
+
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  .main { padding: 40px 60px 60px; }
+
+  .phase-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--dusty);
+    margin: 32px 0 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .phase-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: currentColor;
+    opacity: 0.3;
+  }
+
+  .week-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+
+  .week-day-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--dusty);
+    text-align: center;
+    padding: 4px 0;
+  }
+
+  .week {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+
+  .week-6 {
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 6px;
+    margin-bottom: 6px;
+  }
+
+  .day-card {
+    background: white;
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 8px;
+    padding: 10px 8px 8px;
+    min-height: 158px;
+    position: relative;
+  }
+
+  .day-card.domingo { background: #fdf6f0; border-color: rgba(212,137,106,0.3); }
+  .day-card.urgente { border: 2px solid var(--rust); background: #fff9f8; }
+  .day-card.cierre { border: 2px solid var(--ink); }
+  .day-card.fin { border: 2px solid var(--visionaria); }
+  .day-card.empty { background: transparent; border: 1px dashed rgba(0,0,0,0.1); }
+
+  .day-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    line-height: 1;
+    margin-bottom: 1px;
+  }
+
+  .day-name {
+    font-family: 'DM Mono', monospace;
+    font-size: 9px;
+    letter-spacing: 0.12em;
+    color: var(--dusty);
+    text-transform: uppercase;
+    margin-bottom: 7px;
+  }
+
+  .badge {
+    position: absolute;
+    top: 8px;
+    right: 6px;
+    color: white;
+    font-family: 'DM Mono', monospace;
+    font-size: 7.5px;
+    letter-spacing: 0.08em;
+    padding: 2px 5px;
+    border-radius: 3px;
+    text-transform: uppercase;
+  }
+
+  .blocks { display: flex; flex-direction: column; gap: 3px; }
+
+  .block {
+    display: flex;
+    align-items: flex-start;
+    gap: 4px;
+    padding: 3px 5px;
+    border-radius: 4px;
+    font-size: 10px;
+    line-height: 1.3;
+  }
+
+  .block-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 1px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .block-content { display: flex; flex-direction: column; }
+  .block-time { font-family: 'DM Mono', monospace; font-size: 8px; color: var(--dusty); }
+
+  .block.taller { background: rgba(192,80,58,0.08); }
+  .block.taller .block-dot { background: var(--taller); }
+  .block.taller .block-text { color: #8a2a1a; }
+
+  .block.marketing { background: rgba(107,143,113,0.08); }
+  .block.marketing .block-dot { background: var(--marketing); }
+  .block.marketing .block-text { color: #3a5f40; }
+
+  .block.chino { background: rgba(74,111,165,0.08); }
+  .block.chino .block-dot { background: var(--chino); }
+  .block.chino .block-text { color: #2a4f85; }
+
+  .block.gym { background: rgba(155,127,191,0.08); }
+  .block.gym .block-dot { background: var(--gym); }
+  .block.gym .block-text { color: #5a3f8f; }
+
+  .block.trabajo { background: rgba(201,168,76,0.08); }
+  .block.trabajo .block-dot { background: var(--trabajo); }
+  .block.trabajo .block-text { color: #7a5a10; }
+
+  .block.familia { background: rgba(212,137,106,0.1); }
+  .block.familia .block-dot { background: var(--familia); }
+  .block.familia .block-text { color: #8a4a2a; }
+
+  .block.visionaria { background: rgba(139,74,139,0.08); }
+  .block.visionaria .block-dot { background: var(--visionaria); }
+  .block.visionaria .block-text { color: #5a1a5a; }
+
+  .block.mecanica { background: rgba(176,125,58,0.09); }
+  .block.mecanica .block-dot { background: var(--mecanica); }
+  .block.mecanica .block-text { color: #7a4a10; }
+
+  .footer {
+    background: var(--ink);
+    color: var(--cream);
+    padding: 36px 60px;
+    margin-top: 40px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+  }
+
+  .footer h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    margin-bottom: 14px;
+    color: var(--gold-light);
+  }
+
+  .rule {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 9px;
+    font-size: 12px;
+    line-height: 1.5;
+    color: rgba(245,240,232,0.75);
+  }
+
+  .rule-num {
+    font-family: 'DM Mono', monospace;
+    color: var(--gold);
+    font-size: 11px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-label">Sistema Operativo Personal</div>
+  <h1>Sistema <em>Irina</em></h1>
+  <div class="header-sub">23 FEB → 21 MAR &nbsp;·&nbsp; MODO CONSTRUCTORA + VISIONARIA</div>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-dot" style="background:var(--taller)"></div>Taller</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--marketing)"></div>Marketing</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--chino)"></div>Chino 🀄 (no negociable)</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--gym)"></div>Gym 💪 (no negociable)</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--trabajo)"></div>Trabajo</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--familia)"></div>Familia</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--visionaria)"></div>Modo Visionaria</div>
+  <div class="legend-item"><div class="legend-dot" style="background:var(--mecanica)"></div>Mecánica Clásica (45 min)</div>
+</div>
+
+<div class="main">
+
+  <div class="week-header">
+    <div class="week-day-label">LUN</div>
+    <div class="week-day-label">MAR</div>
+    <div class="week-day-label">MIÉ</div>
+    <div class="week-day-label">JUE</div>
+    <div class="week-day-label">VIE</div>
+    <div class="week-day-label">SÁB</div>
+    <div class="week-day-label">DOM</div>
+  </div>
+
+  <div class="phase-label" style="color:var(--rust)">⚡ Semana 1 — Taller dominante · Entrega antes del 28 feb</div>
+
+  <div class="week">
+    <!-- LUN 23 -->
+    <div class="day-card">
+      <div class="day-number">23</div>
+      <div class="day-name">Lun · Feb</div>
+      <div class="blocks">
+        <div class="block taller"><div class="block-dot"></div><div class="block-content"><div class="block-text">Taller: contenido</div><div class="block-time">7:00–8:30am</div></div></div>
+        <div class="block taller"><div class="block-dot"></div><div class="block-content"><div class="block-text">Taller: estructura</div><div class="block-time">9:00–10:30am</div></div></div>
+        <div class="block taller"><div class="block-dot"></div><div class="block-content"><div class="block-text">Taller: claridad</div><div class="block-time">11:00–12:30pm</div></div></div>
+        <div class="block gym"><div class="block-dot"></div><div class="block-content"><div class="block-text">Gym 💪</div><div class="block-time">5:30–6:30pm</div></div></div>
+      </div>
+    </div>
+    <!-- MAR 24 -->
+    <div class="day-card">
+      <div class="day-number">24</div>
+      <div class="day-name">Mar · Feb</div>
+      <div class="blocks">
+        <div class="block chino"><div class="block-dot"></div><div class="block-content"><div class="block-text">Chino 🀄</div><div class="block-time">9:00am–12:00pm</div></div></div>
+        <div class="block taller"><div class="block-dot"></div><div class="block-content"><div class="block-text">Taller: desarrollo</div><div class="block-time">1:00–2:30pm</div></div></div>
+        <div class="block trabajo"><div class="block-dot"></div><div class="block-content"><div class="block-text">Trabajo 💼</div><div class="block-time">4:30–6:30pm</div></div></div>
+      </div>
+    </div>
+    <!-- MIÉ 25 -->
+    <div class="day-card">
+      <div class="day-number">25</div>
+      <div class="day-name">Mié · Feb</div>
+      <div class="blocks">
+        <div class="block taller"><div class="block-dot"></div><div class="block-content"><div class="block-text">Taller: correcciones</div><div class="block-time">7:00–8:30am</div></div></div>
+        <div class="block taller"><div class="block-dot"></div><div class="block-content"><div class="block-text">Taller: edición</div><div class="block-time">9:00–10:30am</div></div></div>
+        <div class="block taller"><div class="block-dot"></div><div class="block-content"><div class="block-text">Taller: revisión final</div><div class="block-time">11:00–12:30pm</div></div></div>
+        <div class="block gym"><div class="block-dot"></div><div class="block-content"><div class="block-text">Gym 💪</div><div class="block-time">5:30–6:30pm</div></div></div>
+      </div>
+    </div>
+    <!-- JUE 26 -->
+    <div class="day-card">
+      <div class="day-number">26</div>
+      <div class="day-name">Jue · Feb</div>
+      <div class="blocks">
+        <div class="block chino"><div class="block-dot"></div><div class="block-content"><div class="block-text">Chino 🀄</div><div class="block-time">9:00am–12:00pm</div></div></div>
+        <div class="block taller"><div class="block-dot"></div><div class="block-content"><div class="block-text">Taller: finalización</div><div class="block-time">1:00–2:30pm</div></div></div>
+        <div class="block trabajo"><div class="block-dot"></div><div class="block-content"><div class="block-text">Trabajo 💼</div><div class="block-time">4:30–6:30pm</div></div></div>
+      </div>
+    </div>
+    <!-- VIE 27 -->
+    <div class="day-card urgente">
+      <div class="day-number">27</div>
+      <div class="day-name">Vie · Feb</div>
+      <div class="badge" style="background:var(--rust)">Pre-entrega</div>
+      <div class="blocks">
+        <div class="block gym"><div class="block-dot"></div><div class="block-content"><div class="block-text">Gym 💪</div><div class="block-time">7:00–9:00am</div></div></div>
+        <div class="block taller"><div class="block-dot"></div><div class="block-content"><div class="block-text">Prep. envío</div><div class="block-time">9:30–11:00am</div></div></div>
+        <div class="block taller"><div class="block-dot"></div><div class="block-content"><div class="block-text">Buffer correcciones</div><div class="block-time">11:30–1:00pm</div></div></div>
+      </div>
+    </div>
+    <!-- SÁB 28 -->
+    <div class="day-card urgente">
+      <div class="day-number">28</div>
+      <div class="day-name">Sáb · Feb</div>
+      <div class="badge" style="background:var(--rust)">🔴 Entrega</div>
+      <div class="blocks">
+        <div class="block trabajo"><div class="block-dot"></div><div class="block-content"><div class="block-text">Trabajo 💼</div><div class="block-time">9:00–11:00am</div></div></div>
+        <div class="block taller"><div class="block-dot"></div><div class="block-content"><div class="block-text">Entrega taller ✅</div><div class="block-time">11:30–1:00pm</div></div></div>
+        <div class="block mecanica"><div class="block-dot"></div><div class="block-content"><div class="block-text">Mecánica Clásica ⚙️</div><div class="block-time">2:00–2:45pm</div></div></div>
+        <div class="block trabajo"><div class="block-dot"></div><div class="block-content"><div class="block-text">Trabajo 💼</div><div class="block-time">6:00–8:00pm</div></div></div>
+        <div class="block chino"><div class="block-dot"></div><div class="block-content"><div class="block-text">Chino 🀄</div><div class="block-time">8:00pm+</div></div></div>
+      </div>
+    </div>
+    <!-- DOM 1 MAR -->
+    <div class="day-card domingo">
+      <div class="day-number">1</div>
+      <div class="day-name">Dom · Mar</div>
+      <div class="blocks">
+        <div class="block familia"><div class="block-dot"></div><div class="block-content"><div class="block-text">Familia 🏡</div><div class="block-time">Todo el día</div></div></div>
+        <div class="block visionaria"><div class="block-dot"></div><div class="block-content"><div class="block-text">Visionaria ✨ (noche)</div><div class="block-time">Solo pensar, no ejecutar</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase-label" style="color:var(--sage)">🌱 Semana 2 — Marketing toma el protagonismo</div>
+
+  <div class="week">
+    <!-- LUN 2 -->
+    <div class="day-card">
+      <div class="day-number">2</div>
+      <div class="day-name">Lun · Mar</div>
+      <div class="blocks">
+        <div class="block marketing"><div class="block-dot"></div><div class="block-content"><div class="block-text">Marketing: estrategia</div><div class="block-time">7:00–8:30am</div></div></div>
+        <div class="block marketing"><div class="block-dot"></div><div class="block-content"><div class="block-text">Marketing: ejecución</div><div class="block-time">9:00–10:30am</div></div></div>
+        <div class="block marketing"><div class="block-dot"></div><div class="block-content"><div class="block-text">Revisión + ajuste</div><div class="block-time">11:00–12:30pm</div></div></div>
+        <div class="block gym"><div class="block-dot"></div><div class="block-content"><div class="block-text">Gym 💪</div><div class="block-time">5:30–6:30pm</div></div></div>
+      </div>
+    </div>
+    <!-- MAR 3 -->
+    <div class="day-card">
+      <div class="day-number">3</div>
+      <div class="day-name">Mar · Mar</div>
+      <div class="blocks">
+        <div class="block chino"><div class="block-dot"></div><div class="block-content"><div class="block-text">Chino 🀄</div><div class="block-time">9:00am–12:00pm</div></div></div>
+        <div class="block marketing"><div class="block-dot"></div><div class="block-content"><div class="block-text">Marketing: contenido</div><div class="block-time">1:00–2:30pm</div></div></div>
+        <div class="block trabajo"><div class="block-dot"></div><div class="block-content"><div class="block-text">Trabajo 💼</div><div class="block-time">4:30–6:30pm</div></div></div>
+      </div>
+    </div>
+    <!-- MIÉ 4 -->
+    <div class="day-card">
+      <div class="day-number">4</div>
+      <div class="day-name">Mié · Mar</div>
+      <div class="blocks">
+        <div class="block marketing"><div class="block-dot"></div><div class="block-content"><div class="block-text">Marketing: análisis</div><div class="block-time">7:00–8:30am</div></div></div>
+        <div class="block marketing"><div class="block-dot"></div><div class="block-content"><div class="block-text">Marketing: ejecución</div><div class="block-time">9:00–10:30am</div></div></div>
+        <div class="block marketing"><div class="block-dot"></div><div class="block-content"><div class="block-text">Revisión semana</div><div class="block-time">11:00–12:00pm</div></div></div>
+        <div class="block gym"><div class="block-dot"></div><div class="block-content"><div class="block-text">Gym 💪</div><div class="block-time">5:30–6:30pm</div></div></div>
+      </div>
+    </div>
+    <!-- JUE 5 -->
+    <div class="day-card">
+      <div class="day-number">5</div>
+      <div class="day-name">Jue · Mar</div>
+      <div class="blocks">
+        <div class="block chino"><div class="block-dot"></div><div class="block-content"><div class="block-text">Chino 🀄</div><div class="block-time">9:00am–12:00pm</div></div></div>
+        <div class="block marketing"><div class="block-dot"></div><div class="block-content"><div class="block-text">Marketing: optimizar</div><div class="block-time">1:00–2:30pm</div></div></div>
+        <div class="block trabajo"><div class="block-dot"></div><div class="block-content"><div class="block-text">Trabajo 💼</div><div class="block-time">4:30–6:30pm</div></div></div>
+      </div>
+    </div>
+    <!-- VIE 6 -->
+    <div class="day-card">
+      <div class="day-number">6</div>
+      <div class="day-name">Vie · Mar</div>
+      <div class="blocks">
+        <div class="block gym"><div class="block-dot"></div><div class="block-content"><div class="block-text">Gym 💪</div><div class="block-time">7:00–9:00am</div></div></div>
+        <div class="block marketing"><div class="block-dot"></div><div class="block-content"><div class="block-text">Marketing: cierre semana</div><div class="block-time">9:30–11:00am</div></div></div>
+        <div class="block marketing"><div class="block-dot"></div><div class="block-content"><div class="block-text">Finanzas 💰 (1h)</div><div class="block-time">11:30–12:30pm</div></div></div>
+      </div>
+    </div>
+    <!-- SÁB 7 -->
+    <div class="day-card">
+      <div class="day-number">7</div>
+      <div class="day-name">Sáb · Mar</div>
+      <div class="blocks">
+        <div class="block trabajo"><div class="block-dot"></div><div class="block-content"><div class="block-text">Trabajo 💼</div><div class="block-time">9:00–11:00am</div></div></div>
+        <div class="block marketing"><div class="block-dot"></div><div class="block-content"><div class="block-text">Marketing libre</div><div class="block-time">11:30–1:00pm</div></div></div>
+        <div class="block mecanica"><div class="block-dot"></div><div class="block-content"><div class="block-text">Mecánica Clásica ⚙️</div><div class="block-time">2:00–2:45pm</div></div></div>
+        <div class="block trabajo"><div class="block-dot"></div><div class="block-content"><div class="block-text">Trabajo 💼</div><div class="block-time">6:00–8:00pm</div></div></div>
+        <div class="block chino"><div class="block-dot"></div><div class="block-content"><div class="block-text">Chino 🀄</div><div class="block-time">8:00pm+</div></div></div>
+      </div>
+    </div>
+    <!-- DOM 8 -->
+    <div class="day-card domingo">
+      <div class="day-number">8</div>
+      <div class="day-name">Dom · Mar</div>
+      <div class="blocks">
+        <div class="block familia"><div class="block-dot"></div><div class="block-content"><div class="block-text">Familia 🏡</div><div class="block-time">Todo el día</div></div></div>
+        <div class="block visionaria"><div class="block-dot"></div><div class="block-content"><div class="block-text">Visionaria ✨ (noche)</div><div class="block-time">Planear próx. 2 semanas</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase-label" style="color:var(--sage)">🚀 Semana 3 — Consolidar Marketing</div>
+
+  <div class="week">
+    <!-- LUN 9 -->
+    <div class="day-card">
+      <div class="day-number">9</div>
+      <div class="day-name">Lun · Mar</div>
+      <div class="blocks">
+        <div class="block marketing"><div class="block-dot"></div><div class="block-content"><div class="block-text">Marketing: profundizar</div><div class="block-time">7:00–8:30am</div></div></div>
+        <div class="block marketing"><div class="block-dot"></div><div class="block-content"><div class="block-text">Marketing: ejecución</div><div class="block-time">9:00–10:30am</div></div></div>
+        <div class="block marketing"><div class="block-dot"></div><div class="block-content"><div class="block-text">Métricas + revisión</div><div class="block-time">11:00–12:30pm</div></div></div>
+        <div class="block gym"><div class="block-dot"></div><div class="block-content"><div class="block-text">Gym 💪</div><div class="block-time">5:30–6:30pm</div></div></div>
+      </div>
+    </div>
+    <!-- MAR 10 -->
+    <div class="day-card">
+      <div class="day-number">10</div>
+      <div class="day-name">Mar · Mar</div>
+      <div class="blocks">
+        <div class="block chino"><div class="block-dot"></div><div class="block-content"><div class="block-text">Chino 🀄</div><div class="block-time">9:00am–12:00pm</div></div></div>
+        <div class="block marketing"><div class="block-dot"></div><div class="block-content"><div class="block-text">Marketing: campaña</div><div class="block-time">1:00–2:30pm</div></div></div>
+        <div class="block trabajo"><div class="block-dot"></div><div class="block-content"><div class="block-text">Trabajo 💼</div><div class="block-time">4:30–6:30pm</div></div></div>
+      </div>
+    </div>
+    <!-- MIÉ 11 -->
+    <div class="day-card">
+      <div class="day-number">11</div>
+      <div class="day-name">Mié · Mar</div>
+      <div class="blocks">
+        <div class="block marketing"><div class="block-dot"></div><div class="block-content"><div class="block-text">Marketing: contenido</div><div class="block-time">7:00–8:30am</div></div></div>
+        <div class="block marketing"><div class="block-dot"></div><div class="block-content"><div class="block-text">Marketing: distribución</div><div class="block-time">9:00–10:30am</div></div></div>
+        <div class="block marketing"><div class="block-dot"></div><div class="block-content"><div class="block-text">Cierre + revisión</div><div class="block-time">11:00–12:00pm</div></div></div>
+        <div class="block mecanica"><div class="block-dot"></div><div class="block-content"><div class="block-text">Mecánica Clásica ⚙️</div><div class="block-time">12:15–1:00pm</div></div></div>
+        <div class="block gym"><div class="block-dot"></div><div class="block-content"><div class="block-text">Gym 💪</div><div class="block-time">5:30–6:30pm</div></div></div>
+      </div>
+    </div>
+    <!-- JUE 12 -->
+    <div class="day-card">
+      <div class="day-number">12</div>
+      <div class="day-name">Jue · Mar</div>
+      <div class="blocks">
+        <div class="block chino"><div class="block-dot"></div><div class="block-content"><div class="block-text">Chino 🀄</div><div class="block-time">9:00am–12:00pm</div></div></div>
+        <div class="block marketing"><div class="block-dot"></div><div class="block-content"><div class="block-text">Marketing: análisis</div><div class="block-time">1:00–2:30pm</div></div></div>
+        <div class="block trabajo"><div class="block-dot"></div><div class="block-content"><div class="block-text">Trabajo 💼</div><div class="block-time">4:30–6:30pm</div></div></div>
+      </div>
+    </div>
+    <!-- VIE 13 -->
+    <div class="day-card">
+      <div class="day-number">13</div>
+      <div class="day-name">Vie · Mar</div>
+      <div class="blocks">
+        <div class="block gym"><div class="block-dot"></div><div class="block-content"><div class="block-text">Gym 💪</div><div class="block-time">7:00–9:00am</div></div></div>
+        <div class="block marketing"><div class="block-dot"></div><div class="block-content"><div class="block-text">Marketing: optimizar</div><div class="block-time">9:30–11:00am</div></div></div>
+        <div class="block marketing"><div class="block-dot"></div><div class="block-content"><div class="block-text">Finanzas 💰 (1h)</div><div class="block-time">11:30–12:30pm</div></div></div>
+      </div>
+    </div>
+    <!-- SÁB 14 -->
+    <div class="day-card">
+      <div class="day-number">14</div>
+      <div class="day-name">Sáb · Mar</div>
+      <div class="blocks">
+        <div class="block trabajo"><div class="block-dot"></div><div class="block-content"><div class="block-text">Trabajo 💼</div><div class="block-time">9:00–11:00am</div></div></div>
+        <div class="block marketing"><div class="block-dot"></div><div class="block-content"><div class="block-text">Marketing: cierre</div><div class="block-time">11:30–1:00pm</div></div></div>
+        <div class="block mecanica"><div class="block-dot"></div><div class="block-content"><div class="block-text">Mecánica Clásica ⚙️</div><div class="block-time">2:00–2:45pm</div></div></div>
+        <div class="block trabajo"><div class="block-dot"></div><div class="block-content"><div class="block-text">Trabajo 💼</div><div class="block-time">6:00–8:00pm</div></div></div>
+        <div class="block chino"><div class="block-dot"></div><div class="block-content"><div class="block-text">Chino 🀄</div><div class="block-time">8:00pm+</div></div></div>
+      </div>
+    </div>
+    <!-- DOM 15 -->
+    <div class="day-card domingo">
+      <div class="day-number">15</div>
+      <div class="day-name">Dom · Mar</div>
+      <div class="blocks">
+        <div class="block familia"><div class="block-dot"></div><div class="block-content"><div class="block-text">Familia 🏡</div><div class="block-time">Todo el día</div></div></div>
+        <div class="block visionaria"><div class="block-dot"></div><div class="block-content"><div class="block-text">Visionaria ✨ (noche)</div><div class="block-time">Planear regreso universidad</div></div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="phase-label" style="color:var(--visionaria)">🎯 Semana 4 — Cierre de etapa · 19 Mar es el hito</div>
+
+  <!-- Semana 4 tiene 6 días (lun 16 – sáb 21), sin domingo -->
+  <div class="week-6">
+    <!-- LUN 16 -->
+    <div class="day-card">
+      <div class="day-number">16</div>
+      <div class="day-name">Lun · Mar</div>
+      <div class="blocks">
+        <div class="block marketing"><div class="block-dot"></div><div class="block-content"><div class="block-text">Marketing: consolidar</div><div class="block-time">7:00–8:30am</div></div></div>
+        <div class="block marketing"><div class="block-dot"></div><div class="block-content"><div class="block-text">Marketing: cierre mes</div><div class="block-time">9:00–10:30am</div></div></div>
+        <div class="block visionaria"><div class="block-dot"></div><div class="block-content"><div class="block-text">Planear siguiente etapa</div><div class="block-time">11:00–12:30pm</div></div></div>
+        <div class="block gym"><div class="block-dot"></div><div class="block-content"><div class="block-text">Gym 💪</div><div class="block-time">5:30–6:30pm</div></div></div>
+      </div>
+    </div>
+    <!-- MAR 17 -->
+    <div class="day-card">
+      <div class="day-number">17</div>
+      <div class="day-name">Mar · Mar</div>
+      <div class="blocks">
+        <div class="block chino"><div class="block-dot"></div><div class="block-content"><div class="block-text">Chino 🀄</div><div class="block-time">9:00am–12:00pm</div></div></div>
+        <div class="block visionaria"><div class="block-dot"></div><div class="block-content"><div class="block-text">Revisión mes completo</div><div class="block-time">1:00–2:30pm</div></div></div>
+        <div class="block trabajo"><div class="block-dot"></div><div class="block-content"><div class="block-text">Trabajo 💼</div><div class="block-time">4:30–6:30pm</div></div></div>
+      </div>
+    </div>
+    <!-- MIÉ 18 -->
+    <div class="day-card">
+      <div class="day-number">18</div>
+      <div class="day-name">Mié · Mar</div>
+      <div class="blocks">
+        <div class="block marketing"><div class="block-dot"></div><div class="block-content"><div class="block-text">Marketing: reporte final</div><div class="block-time">7:00–8:30am</div></div></div>
+        <div class="block visionaria"><div class="block-dot"></div><div class="block-content"><div class="block-text">Diseñar Sistema Uni</div><div class="block-time">9:00–10:30am</div></div></div>
+        <div class="block mecanica"><div class="block-dot"></div><div class="block-content"><div class="block-text">Mecánica Clásica ⚙️</div><div class="block-time">10:45–11:30am</div></div></div>
+        <div class="block marketing"><div class="block-dot"></div><div class="block-content"><div class="block-text">Finanzas 💰 + cierre</div><div class="block-time">11:45–12:45pm</div></div></div>
+        <div class="block gym"><div class="block-dot"></div><div class="block-content"><div class="block-text">Gym 💪</div><div class="block-time">5:30–6:30pm</div></div></div>
+      </div>
+    </div>
+    <!-- JUE 19 — FIN ETAPA -->
+    <div class="day-card fin">
+      <div class="day-number">19</div>
+      <div class="day-name">Jue · Mar</div>
+      <div class="badge" style="background:var(--visionaria)">FIN ETAPA</div>
+      <div class="blocks">
+        <div class="block chino"><div class="block-dot"></div><div class="block-content"><div class="block-text">Chino 🀄</div><div class="block-time">9:00am–12:00pm</div></div></div>
+        <div class="block visionaria"><div class="block-dot"></div><div class="block-content"><div class="block-text">Celebrar + reflexionar 🎉</div><div class="block-time">1:00–2:30pm</div></div></div>
+        <div class="block trabajo"><div class="block-dot"></div><div class="block-content"><div class="block-text">Trabajo 💼</div><div class="block-time">4:30–6:30pm</div></div></div>
+      </div>
+    </div>
+    <!-- VIE 20 -->
+    <div class="day-card">
+      <div class="day-number">20</div>
+      <div class="day-name">Vie · Mar</div>
+      <div class="blocks">
+        <div class="block gym"><div class="block-dot"></div><div class="block-content"><div class="block-text">Gym 💪</div><div class="block-time">7:00–9:00am</div></div></div>
+        <div class="block visionaria"><div class="block-dot"></div><div class="block-content"><div class="block-text">Prep. Sistema Universidad</div><div class="block-time">9:30–11:00am</div></div></div>
+        <div class="block visionaria"><div class="block-dot"></div><div class="block-content"><div class="block-text">Definir prioridades Q2</div><div class="block-time">11:30–1:00pm</div></div></div>
+      </div>
+    </div>
+    <!-- SÁB 21 — CIERRE -->
+    <div class="day-card cierre">
+      <div class="day-number">21</div>
+      <div class="day-name">Sáb · Mar</div>
+      <div class="badge" style="background:var(--ink)">CIERRE</div>
+      <div class="blocks">
+        <div class="block trabajo"><div class="block-dot"></div><div class="block-content"><div class="block-text">Trabajo 💼</div><div class="block-time">9:00–11:00am</div></div></div>
+        <div class="block visionaria"><div class="block-dot"></div><div class="block-content"><div class="block-text">Retrospectiva Sistema Irina</div><div class="block-time">11:30–1:00pm</div></div></div>
+        <div class="block mecanica"><div class="block-dot"></div><div class="block-content"><div class="block-text">Mecánica Clásica ⚙️</div><div class="block-time">2:00–2:45pm</div></div></div>
+        <div class="block trabajo"><div class="block-dot"></div><div class="block-content"><div class="block-text">Trabajo 💼</div><div class="block-time">6:00–8:00pm</div></div></div>
+        <div class="block chino"><div class="block-dot"></div><div class="block-content"><div class="block-text">Chino 🀄</div><div class="block-time">8:00pm+</div></div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <div>
+    <h3>Reglas nucleares</h3>
+    <div class="rule"><span class="rule-num">01</span>Si algo no está en el bloque del día, no existe ese día.</div>
+    <div class="rule"><span class="rule-num">02</span>Chino y gym son sagrados. No se negocian nunca.</div>
+    <div class="rule"><span class="rule-num">03</span>Domingo es familia. Visionaria solo si queda espacio en la noche.</div>
+    <div class="rule"><span class="rule-num">04</span>Nunca mezcles Constructora y Visionaria en el mismo bloque.</div>
+    <div class="rule"><span class="rule-num">05</span>Tu sabotaje no viene de flojera. Viene de sobre-expansión mental.</div>
+  </div>
+  <div>
+    <h3>Las dos Irinas</h3>
+    <div class="rule"><span class="rule-num">🔨</span><span><strong style="color:var(--gold-light)">Constructora</strong> → Bloques 90 min, entregables concretos, fechas reales. Lun–Sáb.</span></div>
+    <div class="rule"><span class="rule-num">✨</span><span><strong style="color:var(--gold-light)">Visionaria</strong> → Pensar, diseñar, proyectar sin ejecutar. Ideas en libreta, no en acciones.</span></div>
+    <div class="rule"><span class="rule-num">📅</span><span>El 19 de marzo cierras esta etapa. El 21 haces retrospectiva. El 22 en adelante: Sistema Universidad.</span></div>
+  </div>
+</div>
+
+</body>
+</html>
